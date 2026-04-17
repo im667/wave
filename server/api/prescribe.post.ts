@@ -5,11 +5,10 @@ import { createClient } from '@supabase/supabase-js'
 import { generateFrequencyAudio } from '../utils/audioMaker'
 
 const { Solar } = pkg
-const resend = new Resend(process.env.RESEND_API_KEY)
 
-const supabaseUrl = process.env.SUPABASE_URL || ''
-const supabaseKey = process.env.SUPABASE_KEY || ''
-const supabase = createClient(supabaseUrl, supabaseKey)
+const config = useRuntimeConfig()
+const resend = new Resend(config.resendApiKey)
+const supabase = createClient(config.supabaseUrl, config.supabaseKey)
 
 // 🌟 [추가됨] 한자를 한글로 변환하여 '일주' 이름을 뽑아주는 함수
 function getIljuName(dayPillar: string) {
@@ -54,6 +53,7 @@ export default defineEventHandler(async (event) => {
     const hostUrl = getRequestURL(event).origin
     const outputFileName = await generateFrequencyAudio(freq, myeongsik, name)
     const audioUrl = `${hostUrl}/outputs/${outputFileName}`
+    
 
     // 6. 🌟 [업그레이드] 프리미엄 이메일 발송
     const emailResult = await resend.emails.send({
