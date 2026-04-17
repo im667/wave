@@ -244,7 +244,7 @@
 
       <div class="w-full max-w-4xl pt-24 border-t border-slate-800/40 relative pb-10">
         <div class="text-center mb-16 animate-fade-in-up" style="animation-delay: 0.8s;">
-          <h2 class="text-2xl font-semibold tracking-tight text-slate-200 mb-6">수천 년의 명리학, 파동 과학으로 증명되다</h2>
+          <h2 class="text-2xl font-semibold tracking-tight text-slate-200 mb-6">수천 년의 명리학,</br> 파동 과학과 만나다.</h2>
           <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto font-light leading-relaxed break-keep">
             사주는 미신이 아니라 고도화된 동양의 통계학입니다. 우리는 오랜 세월 검증된 명리의 이치를, 현대 뇌과학의 뇌파 동조 현상과 접목하여 당신의 운명을 조율합니다.
           </p>
@@ -254,14 +254,14 @@
           <div class="bg-slate-900/40 p-8 rounded-3xl border border-slate-800/60 hover:border-purple-600/40 transition-colors">
             <h4 class="text-lg font-semibold text-slate-200 mb-4 tracking-tight">01. 뇌파 동조와 기운의 변화</h4>
             <p class="text-slate-400 text-sm leading-relaxed mb-6 font-light break-keep">
-              아무 주파수나 듣는다고 삶이 바뀌지 않습니다. 『밝은주파수』 앱은 사주 분석으로 도출된 당신만의 '결핍 주파수'를 정확한 Hz 대역으로 들려주어, 무의식의 깊은 곳(세타파 상태)에서부터 긍정적인 끌어당김을 유도합니다.
+              아무 주파수나 듣는다고 삶이 바뀌지 않습니다. 『밝은주파수』 앱은 사주 분석으로 도출된 당신의 '결핍'을 정확한 Hz 대역으로 들려주어, 무의식의 깊은 곳(세타파 상태)에서부터 긍정적인 끌어당김을 유도합니다.
             </p>
             <p class="text-[10px] text-slate-500 font-mono">* Oster, G. (1973). "Auditory beats in the brain". Scientific American.</p>
           </div>
           <div class="bg-slate-900/40 p-8 rounded-3xl border border-slate-800/60 hover:border-purple-600/40 transition-colors">
             <h4 class="text-lg font-semibold text-slate-200 mb-4 tracking-tight">02. 맑은 파동과 세포의 공명</h4>
             <p class="text-slate-400 text-sm leading-relaxed mb-6 font-light break-keep">
-              탁한 기운은 운을 밀어냅니다. 손실 압축된 영상 플랫폼의 탁한 음원 대신, 우리 앱은 24bit 이상의 맑고 순수한 무손실 파동을 당신의 세포 하나하나에 온전히 전달하여 미세한 공명을 일으킵니다.
+              탁한 기운은 운을 밀어냅니다. 손실 압축된 영상 플랫폼의 탁한 음원 대신,</br> 24bit 이상의 순수한 무손실 파동을 당신에게 온전히 전달하여 정확하고 맑은 공명을 제공합니다.
             </p>
             <p class="text-[10px] text-slate-500 font-mono">* Bartel, L. et al. (2014). "Vibroacoustic disease and healing". Rehab Research.</p>
           </div>
