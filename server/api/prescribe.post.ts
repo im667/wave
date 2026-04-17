@@ -65,13 +65,13 @@ export default defineEventHandler(async (event) => {
 
     // 5. 오디오 생성
     const hostUrl = getRequestURL(event).origin
-    const outputFileName = await generateFrequencyAudio(freq, myeongsik, name)
-    const audioUrl = `${hostUrl}/outputs/${outputFileName}`
+    // const outputFileName = await generateFrequencyAudio
+    const audioUrl = await generateFrequencyAudio(freq, myeongsik, name, sbUrl, sbKey)
     
 
     // 6. 🌟 [업그레이드] 프리미엄 이메일 발송
     const emailResult = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'hello@makefrequency.com',
       to: email,
       // 메일이 겹쳐서 '...' 으로 접히는 것을 방지하기 위해 제목에 고유시간 추가
       subject: `[밝은주파수] ${name}님의 ${iljuKorean} 맞춤 파동 처방전`,
@@ -113,12 +113,15 @@ export default defineEventHandler(async (event) => {
                 </p>
               </div>
 
-              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 20px;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 30px;">
                 <tr>
                   <td align="center">
-                    <a href="${audioUrl}" style="display: inline-block; padding: 20px 30px; background-color: #9333ea; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 50px; border: 1px solid #c084fc; text-align: center;">
-                      [내 사주 기반 주파수 샘플 다운로드]
+                    <a href="${audioUrl}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; padding: 18px 35px; background: linear-gradient(135deg, #9333ea 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; border-radius: 50px; box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);">
+                      <span style="margin-right: 10px; font-size: 20px;">▶</span> 3분 맞춤 주파수 재생하기
                     </a>
+                    <p style="margin-top: 15px; font-size: 13px; color: #64748b;">
+                      버튼을 누르면 플레이어로 재생됩니다.
+                    </p>
                   </td>
                 </tr>
               </table>
