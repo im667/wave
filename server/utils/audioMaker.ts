@@ -16,8 +16,8 @@ export const generateFrequencyAudio = async (
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     const supabase = createClient(sbUrl, sbKey)
-    const safeName = encodeURIComponent(name || 'User')
-    const fileName = `Resonance_${safeName}_${frequency}Hz_${Date.now()}.mp3`
+    // const safeName = encodeURIComponent(name || 'User')
+    const fileName = `Resonance_${frequency}_${frequency}Hz_${Date.now()}.mp3`
     
     // 클라우드 서버의 안전한 임시 폴더(/tmp) 경로 사용
     const tmpFilePath = path.join(os.tmpdir(), fileName)
