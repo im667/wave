@@ -6,9 +6,7 @@ import { generateFrequencyAudio } from '../utils/audioMaker'
 
 const { Solar } = pkg
 
-const config = useRuntimeConfig()
-const resend = new Resend(config.resendApiKey)
-const supabase = createClient(config.supabaseUrl, config.supabaseKey)
+
 
 // 🌟 [추가됨] 한자를 한글로 변환하여 '일주' 이름을 뽑아주는 함수
 function getIljuName(dayPillar: string) {
@@ -21,6 +19,22 @@ function getIljuName(dayPillar: string) {
 }
 
 export default defineEventHandler(async (event) => {
+   // 🌟 [수정됨] 반드시 핸들러 안쪽에서 환경변수를 읽고 연결해야 합니다!
+  const config = useRuntimeConfig()
+  
+  // process.env와 config 양쪽에서 긁어오는 무적의 방어 코드
+  const sbUrl = process.env.SUPABASE_URL || config.supabaseUrl
+  const sbKey = process.env.SUPABASE_KEY || config.supabaseKey
+  const rsKey = process.env.RESEND_API_KEY || config.resendApiKey
+
+  if (!sbUrl || !sbKey) {
+    throw new Error("서버 환경변수(Supabase)를 읽지 못했습니다.")
+  }
+
+  // 이제 안전하게 연결!
+  const supabase = createClient(sbUrl, sbKey)
+  const resend = new Resend(rsKey)
+
   try {
     const body = await readBody(event)
     const { birthDate, birthTime, email, name, focus } = body
