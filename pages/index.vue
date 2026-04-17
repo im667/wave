@@ -34,10 +34,10 @@
       </div>
 
       <div class="w-full max-w-4xl bg-gradient-to-r from-slate-900/0 via-slate-900/60 to-slate-900/0 py-16 mb-24 border-y border-slate-800/50 animate-fade-in-up" style="animation-delay: 0.2s;">
-        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8 text-slate-200 tracking-tight">아무리 애를 써도 풀리지 않는 답답함, 파동이 어긋났을 뿐입니다.</h2>
+        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8 text-slate-200 tracking-tight">아무리 애를 써도 풀리지 않는 답답함</br>내게 맞는 파동을 찾아야합니다.</h2>
         <p class="text-slate-400 text-base md:text-lg max-w-2xl mx-auto text-center font-light leading-loose break-keep">
-          남들이 다 효과를 봤다는 확언과 명상 음악들... 억지로 따라 하며 오히려 마음이 더 초조해지지 않던가요?<br/><br/>
-          당신의 노력이 부족해서가 아닙니다. 내 사주에 불(火)이 모자란지, 물(水)이 넘치는지도 모른 채 무작정 듣는 기성품 소리는 오히려 당신의 기운을 흩어지게 만듭니다. <strong class="text-purple-300 font-medium">이제 남의 옷을 벗어던지고, 오직 당신의 영혼과 공명하는 맑은 파동을 찾으셔야 합니다.</strong>
+          남들이 다 효과를 봤다는 확언 명상 음악, 주파수들...<br/> 억지로 따라 하며 오히려 마음이 더 초조해지지 않던가요?<br/><br/>
+          내 사주에 불(火)이 모자란지, 물(水)이 넘치는지도 모른 채 무작정 듣는 잡음은 오히려 당신의 기운을 흩어지게 만듭니다. <strong class="text-purple-300 font-medium">이제 오직 당신의 영혼과 공명하는 맑은 파동을 찾으셔야 합니다.</strong>
         </p>
       </div>
 
