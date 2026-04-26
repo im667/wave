@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
 
     // 3. 메일 발송
     await resend.emails.send({
-      from: '기연당 | GIYEONDANG <master@makefreequancy.com>',
+      from: '기연당 | GIYEONDANG <master@makefrequancy.com>',
       to: email,
       subject: `[기연당] ${name}님, 당신의 엇갈린 주파수를 교정할 운명 처방전이 도착했습니다.`,
       html: `
