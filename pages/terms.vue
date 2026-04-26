@@ -8,7 +8,7 @@
     <div class="max-w-3xl mx-auto relative z-10">
       <nav class="mb-12">
         <NuxtLink 
-          to="/" 
+          to="/giyeondang" 
           class="inline-flex items-center gap-2 text-slate-500 hover:text-purple-400 transition-colors group"
         >
           <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
@@ -30,7 +30,7 @@
             1. 개인정보 수집 항목 및 목적
           </h2>
           <div class="bg-slate-900/40 rounded-2xl p-6 border border-slate-800/40">
-            <p class="mb-4">『밝은주파수』 서비스는 고유 파동 처방 및 앱 사전예약을 위해 아래의 최소 정보를 수집합니다.</p>
+            <p class="mb-4">『기연당』 서비스는 고유 파동 처방 및 앱 사전예약을 위해 아래의 최소 정보를 수집합니다.</p>
             <ul class="list-disc list-inside space-y-2 ml-2 text-slate-500">
               <li>수집 항목: 성별, 생년월일, 태어난 시간, 이메일 주소</li>
               <li>이용 목적: 사주 명식 분석을 통한 맞춤형 주파수 생성 및 발송, 서비스 런칭 알림</li>
@@ -48,8 +48,8 @@
             해당 데이터는 발송 목적 외에 절대 사용되지 않습니다.
           </p>
           <ul class="list-disc list-inside mt-4 space-y-2 text-slate-500">
-            <li>제공 받는 자: Supabase (데이터 보관), Resend (이메일 발송 시스템)</li>
-            <li>제공 항목: 이메일, 생성된 주파수 데이터</li>
+            <li>제공 받는 자: 기연당</li>
+            <li>제공 항목: 이메일,생년월일, 생성된 주파수 데이터</li>
           </ul>
         </section>
 

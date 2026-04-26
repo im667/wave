@@ -22,3 +22,6 @@ logs
 .env
 .env.*
 !.env.example
+
+# Private DB
+server/data/giyeondang_db.json

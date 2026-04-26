@@ -1,206 +1,138 @@
-// @ts-expect-error: 타입 무시
-import pkg from 'lunar-javascript'
 import { Resend } from 'resend'
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js' // 🌟 파일 업로드에 성공했던 그 클라이언트 호출
 import { generateFrequencyAudio } from '../utils/audioMaker'
 
-const { Solar } = pkg
-
-
-
-// 🌟 [추가됨] 한자를 한글로 변환하여 '일주' 이름을 뽑아주는 함수
-function getIljuName(dayPillar: string) {
-  const map: Record<string, string> = {
-    '甲':'갑', '乙':'을', '丙':'병', '丁':'정', '戊':'무', '己':'기', '庚':'경', '辛':'신', '壬':'임', '癸':'계',
-    '子':'자', '丑':'축', '寅':'인', '卯':'묘', '辰':'진', '巳':'사', '午':'오', '未':'미', '申':'신', '酉':'유', '戌':'술', '亥':'해'
-  }
-  const korean = dayPillar.split('').map(c => map[c] || c).join('')
-  return `${korean}`
-}
-
 export default defineEventHandler(async (event) => {
-   // 🌟 [수정됨] 반드시 핸들러 안쪽에서 환경변수를 읽고 연결해야 합니다!
   const config = useRuntimeConfig()
   
-  // process.env와 config 양쪽에서 긁어오는 무적의 방어 코드
-  const sbUrl = process.env.SUPABASE_URL || config.supabaseUrl
-  const sbKey = process.env.SUPABASE_KEY || config.supabaseKey
   const rsKey = process.env.RESEND_API_KEY || config.resendApiKey
+  const sbUrl = (process.env.SUPABASE_URL || config.supabaseUrl) as string
+  const sbKey = (process.env.SUPABASE_KEY || config.supabaseKey) as string
 
-  if (!sbUrl || !sbKey) {
-    throw new Error("서버 환경변수(Supabase)를 읽지 못했습니다.")
-  }
-
-  // 이제 안전하게 연결!
-  const supabase = createClient(sbUrl, sbKey)
   const resend = new Resend(rsKey)
+  
+  // 🌟 오디오 연성할 때 썼던 확실한 권한의 클라이언트를 여기서도 똑같이 씁니다.
+  const supabase = createClient(sbUrl, sbKey)
 
   try {
     const body = await readBody(event)
-    const { birthDate, birthTime, email, name, focus } = body
+    const { email, name, focus, resultData, birthDate, birthTime } = body 
 
-    // 1. 만세력 변환
-    const date = new Date(birthDate)
-    const [hour, minute] = (birthTime || "12:00").split(':').map(Number)
-    const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute, 0)
-    const eightChar = solar.getLunar().getEightChar()
-    const myeongsik = [eightChar.getYear(), eightChar.getMonth(), eightChar.getDay(), eightChar.getTime()]
+    if (!email || !resultData) {
+      throw createError({ statusCode: 400, statusMessage: "필수 데이터가 누락되었습니다." })
+    }
 
-    // 2. 일주 한글명 추출 (예: 丁亥 -> 정해일주)
-    const iljuHanja = String(myeongsik) // 3번째 기둥이 '일주(나)'를 뜻합니다.
-    const iljuKorean = getIljuName(iljuHanja)
+    const recipe = {
+      baseHz: focus === '재물운' ? 852.0 : focus === '직업운' ? 741.0 : 639.2,
+      subHz: 432.0, 
+      offset: 6.0
+    }
 
-    // 3. 오행 분석
-    const { scores, missingElement } = calculateFiveElements(myeongsik)
-    const freq = getFrequency(missingElement)
+    // 1. MP3 연성
+    const audioUrl = await generateFrequencyAudio({
+      recipe,
+      ilju: resultData.ilju,
+      name,
+      sbUrl,
+      sbKey
+    })
 
-    // 4. DB 저장
-    const { error: dbError } = await supabase
+    // 2. 🌟 DB 기록 (실패하면 바로 터지도록 강력한 방어벽 설정)
+    const { data: insertData, error: dbError } = await supabase
       .from('leads')
-      .insert([{ 
-        name, email, birth_date: birthDate, birth_time: birthTime, 
-        target_element: missingElement, frequency: freq, focus 
-      }])
-    if (dbError) console.error('[DB 에러]', dbError.message)
+      .insert([
+        {
+          email: email,
+          name: name || '고객',
+          birth_date: birthDate || '', 
+          birth_time: birthTime || '', 
+          target_element: resultData.ilju || '', 
+          frequency: `${recipe.baseHz}Hz + ${recipe.subHz}Hz`, 
+          focus: focus || '일반'
+        }
+      ])
+      .select() // 인서트 된 결과를 가져오라고 강제함
 
-    // 5. 오디오 생성
-    const hostUrl = getRequestURL(event).origin
-    // const outputFileName = await generateFrequencyAudio
-    const audioUrl = await generateFrequencyAudio(freq, myeongsik, name, sbUrl, sbKey)
-    
+    if (dbError) {
+      console.error("📍 Leads 테이블 Insert 치명적 오류:", dbError)
+      // 🚨 에러가 나면 프론트엔드로 에러 메시지를 집어 던집니다!
+      throw createError({ statusCode: 500, statusMessage: `DB 기록 실패: ${dbError.message}` })
+    }
 
-    // 6. 🌟 [업그레이드] 프리미엄 이메일 발송
-    const emailResult = await resend.emails.send({
-      from: 'hello@makefrequency.com',
+    console.log(`[DB 기록 완벽 성공] ${name}님 데이터 저장 완료:`, insertData)
+
+    // 3. 메일 발송
+    await resend.emails.send({
+      from: '기연당 | GIYEONDANG <master@makefreequancy.com>',
       to: email,
-      // 메일이 겹쳐서 '...' 으로 접히는 것을 방지하기 위해 제목에 고유시간 추가
-      subject: `[밝은주파수] ${name}님의 ${iljuKorean} 맞춤 파동 처방전`,
+      subject: `[기연당] ${name}님, 당신의 엇갈린 주파수를 교정할 운명 처방전이 도착했습니다.`,
       html: `
-        <div style="background-color: #010312; padding: 40px 10px; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 20px; overflow: hidden; border: 1px solid #334155; box-shadow: 0 10px 40px rgba(147, 51, 234, 0.15);">
+        <div style="background-color: #0E0A14; padding: 60px 20px; font-family: 'Apple SD Gothic Neo', sans-serif; color: #F7F2EB; text-align: center;">
+          <div style="max-width: 600px; margin: 0 auto; border: 1px solid rgba(212, 154, 153, 0.2); border-radius: 24px; padding: 50px 40px; background-color: #0E0A14;">
             
-            <div style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border-bottom: 1px solid #1e293b;">
-              <span style="color: #c084fc; font-size: 12px; font-weight: bold; letter-spacing: 3px;">명리학 × 파동역학</span>
-              <h1 style="color: #ffffff; margin: 15px 0 0 0; font-size: 26px; font-weight: 800; letter-spacing: -1px;">운명을 조율하는 파동</h1>
+            <div style="margin-bottom: 40px;">
+              <h1 style="color: #D49A99; font-weight: 200; letter-spacing: 0.4em; font-size: 14px; margin: 0;">GIYEONDANG</h1>
+              <div style="width: 30px; height: 1px; background-color: #D49A99; margin: 20px auto; opacity: 0.3;"></div>
             </div>
 
-            <div style="padding: 40px 30px;">
-              <p style="font-size: 16px; color: #e2e8f0; line-height: 1.7; margin-bottom: 30px; word-break: keep-all;">
-                안녕하세요, <strong>${name}</strong>님.<br/>
-                입력하신 생년월일시를 바탕으로 정밀 분석된 사주 명식과, 당신만을 위한 맞춤형 주파수 처방전이 완성되었습니다.
+            <div style="margin-bottom: 40px;">
+              <h2 style="font-weight: 300; font-size: 22px; color: #F7F2EB; line-height: 1.5; word-break: keep-all;">
+                "${resultData.title || name + '님의 운명적 주파수'}"
+              </h2>
+              <p style="font-size: 14px; color: #D49A99; font-weight: 300; margin-top: 10px;">
+                ${name}님의 ${resultData.ilju}일주 명식 해독 결과
               </p>
-
-              <div style="background-color: #1e293b; border-left: 4px solid #a855f7; padding: 25px; border-radius: 0 12px 12px 0; margin-bottom: 35px;">
-                <h3 style="color: #ffffff; margin: 0 0 15px 0; font-size: 18px;">📊 타고난 기운 진단</h3>
-                
-                <p style="margin: 0 0 10px 0; color: #94a3b8; font-size: 15px;">
-                  ▶ 당신의 본질: <strong style="color: #e2e8f0; font-size: 17px; background-color: rgba(168, 85, 247, 0.2); padding: 2px 6px; border-radius: 4px;">${iljuKorean} (${iljuHanja})</strong>
-                </p>
-                <p style="margin: 0 0 10px 0; color: #94a3b8; font-size: 15px;">
-                  ▶ 전체 명식: <span style="color: #cbd5e1;">${myeongsik.join(' ')}</span>
-                </p>
-                <p style="margin: 0; color: #94a3b8; font-size: 15px;">
-                  ▶ 현재 필요한 기운: <strong style="color: #38bdf8;">'${missingElement}' (보완 필요)</strong>
-                </p>
-              </div>
-
-              <div style="margin-bottom: 40px;">
-                <h3 style="color: #ffffff; font-size: 18px; margin-bottom: 15px; display: flex; align-items: center;">
-                  <span style="margin-right: 8px;">✨</span> 오늘의 처방: ${freq}Hz
-                </h3>
-                <p style="color: #cbd5e1; font-size: 15px; line-height: 1.7; word-break: keep-all;">
-                  남들이 다 듣는 기성품 명상 음악이 아닌, <strong>${name}</strong>님의 결핍된 '${missingElement}' 기운을 채워주기 위해 특별히 연성된 순수 파동입니다. 조용한 공간에서 눈을 감고 이 소리에 집중해 보세요. 흩어졌던 기운이 정렬되는 것을 느끼실 수 있습니다.
-                </p>
-              </div>
-
-              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 30px;">
-                <tr>
-                  <td align="center">
-                    <a href="${audioUrl}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; padding: 18px 35px; background: linear-gradient(135deg, #9333ea 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; border-radius: 50px; box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);">
-                      <span style="margin-right: 10px; font-size: 20px;">▶</span> 3분 맞춤 주파수 재생하기
-                    </a>
-                    <p style="margin-top: 15px; font-size: 13px; color: #64748b;">
-                      버튼을 누르면 플레이어로 재생됩니다.
-                    </p>
-                  </td>
-                </tr>
-              </table>
-
             </div>
-            
-            <div style="background-color: #0f172a; padding: 30px; text-align: center; border-top: 1px solid #1e293b;">
-              <p style="font-size: 13px; color: #64748b; margin: 0 0 10px 0; line-height: 1.6;">
-                본 앱이 정식 출시되면 <strong>${email}</strong>로 가장 먼저 소식을 전해드리겠습니다.<br/>
-                당신의 맑은 운을 응원합니다.
+
+            <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 16px; margin-bottom: 30px; text-align: left;">
+              <p style="color: #D49A99; font-size: 13px; margin-bottom: 12px; font-weight: bold; letter-spacing: 0.05em;">[심층 명리 진단]</p>
+              <p style="color: #B5A598; line-height: 1.8; font-size: 14px; margin: 0; font-weight: 300;">
+                ${resultData.basic_analysis_core_energy}
               </p>
-              <p style="font-size: 11px; color: #475569; margin: 0; letter-spacing: 1px;">
-                © 2026 밝은주파수 RESONANCE
-              </p>
+            </div>
+
+            <div style="margin-bottom: 40px; text-align: left;">
+              <h3 style="font-size: 15px; color: #D49A99; font-weight: 400; margin-bottom: 15px; letter-spacing: 0.05em;">◈ ${focus} 개인별 최적화 처방</h3>
+              <div style="font-size: 13px; line-height: 1.8; color: #E8DCC4; background: rgba(212, 154, 153, 0.05); padding: 25px; border-radius: 12px; border: 1px solid rgba(212, 154, 153, 0.1);">
+                <p style="margin: 8px 0;">• <strong style="color: #D49A99;">에너지 결합:</strong> ${resultData[`tuning_by_interest_${focus}_deficiency_weakness`] || '기운의 불균형 감지'}</p>
+                <p style="margin: 8px 0;">• <strong style="color: #D49A99;">치명적 약점:</strong> ${resultData[`tuning_by_interest_${focus}_deficiency_fatal_flaw`] || '무의식적 방어기제'}</p>
+                <p style="margin: 8px 0;">• <strong style="color: #D49A99;">개운 리추얼:</strong> ${resultData[`tuning_by_interest_${focus}_prescription_color_reasoning`] || '고유 파동을 통한 에너지 교정'}</p>
+              </div>
+            </div>
+
+            <div style="text-align: center; border: 1px solid rgba(212, 154, 153, 0.4); padding: 40px 30px; border-radius: 20px; background: rgba(212, 154, 153, 0.03); margin-bottom: 40px;">
+              <p style="font-size: 10px; color: #8C6070; letter-spacing: 0.2em; font-weight: bold; margin-bottom: 15px;">PERSONAL MASTERING HZ</p>
+              <div style="font-size: 34px; color: #D49A99; font-weight: 600; margin-bottom: 25px; letter-spacing: -0.02em;">
+                ${recipe.baseHz}Hz + ${recipe.subHz}Hz
+              </div>
+              <a href="${audioUrl}" style="display: inline-block; background: linear-gradient(135deg, #E8DCC4 0%, #D49A99 100%); color: #0E0A14; padding: 20px 40px; text-decoration: none; border-radius: 12px; font-weight: 800; font-size: 16px; box-shadow: 0 15px 35px rgba(212, 154, 153, 0.25);">
+                프라이빗 세션 입장하기
+              </a>
+            </div>
+
+            <div style="background-color: rgba(255, 255, 255, 0.03); padding: 25px; border-radius: 15px; text-align: left; margin-bottom: 40px;">
+              <h4 style="color: #D49A99; margin: 0 0 15px; font-size: 13px; letter-spacing: 0.05em;">⚠️ 주파수 청취 지침 (The Ritual)</h4>
+              <ul style="padding: 0; margin: 0; list-style: none; font-size: 12px; color: #B5A598; line-height: 2; font-weight: 300;">
+                <li>• 좌우 뇌파 동조를 위해 반드시 <strong>이어폰 또는 헤드폰</strong>을 착용하세요.</li>
+                <li>• 가급적 조명을 모두 끄고, 가장 편안한 자세로 눈을 감으세요.</li>
+                <li>• 파동이 전두엽을 지나 척추까지 흐르는 감각에 집중하십시오.</li>
+              </ul>
+            </div>
+
+            <div style="margin-top: 50px; font-size: 10px; color: #4A3B4E; letter-spacing: 0.1em; line-height: 1.6;">
+              © 2026 GIYEONDANG. All Rights Reserved.<br>
+              본 메일은 개인화된 분석 리포트를 포함하고 있어 타인에게 재발송이 불가합니다.
             </div>
 
           </div>
-        </div>
-      `
+        </div>`
     })
 
-    if (emailResult.error) throw new Error(emailResult.error.message)
     return { success: true }
+
   } catch (error: any) {
-    return { success: false, error: error.message }
+    console.error("🔥 최종 발송 프로세스 실패:", error.message)
+    // 에러를 그대로 던져서 프론트(화면) 알림창에 내용이 뜨게 만듭니다.
+    return { success: false, error: error.message || error.statusMessage }
   }
 })
-
-/**
- * 부족한 오행 기운을 치유 주파수(Hz)로 매핑하는 함수
- */
-function getFrequency(element: string): number {
-  const freqs: Record<string, number> = {
-    "목": 417, "화": 528, "토": 396, "금": 852, "수": 741
-  }
-  return freqs[element] || 528
-}
-
-/**
- * 8글자를 분석하여 5행의 기운을 수치화하는 공식
- */
-function calculateFiveElements(baZi: string[]) {
-  const scores: Record<string, number> = { 
-    "목": 0, "화": 0, "토": 0, "금": 0, "수": 0 
-  }
-
-  const mapping: Record<string, string> = {
-    '甲': '목', '乙': '목', '寅': '목', '卯': '목',
-    '丙': '화', '丁': '화', '巳': '화', '午': '화',
-    '戊': '토', '己': '토', '辰': '토', '戌': '토', '丑': '토', '未': '토',
-    '庚': '금', '辛': '금', '申': '금', '酉': '금',
-    '壬': '수', '癸': '수', '亥': '수', '子': '수'
-  }
-
-  // 1. 점수 합산
-  baZi.forEach((pillar, pillarIndex) => {
-    if (!pillar) return
-    pillar.split('').forEach((char, charIndex) => {
-      const element = mapping[char]
-      if (element && scores[element] !== undefined) {
-        let weight = 1
-        if (pillarIndex === 2 && charIndex === 0) weight = 2 // 일간 가중치
-        if (pillarIndex === 1 && charIndex === 1) weight = 2 // 월지 가중치
-        scores[element] += weight
-      }
-    })
-  })
-
-  // 2. 가장 부족한 오행 도출 (타입 에러 완벽 차단)
-  let missingElement = "목"
-  let minScore = 9999
-
-  // 복잡한 reduce 대신 직관적인 Object.entries 반복문 사용
-  for (const [element, score] of Object.entries(scores)) {
-    if (score < minScore) {
-      minScore = score
-      missingElement = element
-    }
-  }
-
-  return { scores, missingElement }
-}
