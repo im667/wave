@@ -6,6 +6,11 @@
         <span class="w-1.5 h-1.5 rounded-full bg-[#D49A99] animate-pulse"></span>
         {{ formData.name }}님을 위한 1:1 고유 기운 처방전
       </div>
+      
+      <div class="text-[#E8DCC4] text-lg md:text-xl font-light tracking-wide -mt-2">
+        {{ formData.name }}님은 <strong class="text-[#D49A99] font-medium">'{{ result.ilju || '해당' }}일주'</strong>입니다.
+      </div>
+
       <h2 class="text-3xl md:text-5xl font-light text-[#F7F2EB] tracking-tight break-keep leading-[1.3]">
         "{{ result.title || '당신의 잃어버린 에너지를 찾았습니다' }}"
       </h2>
@@ -157,7 +162,7 @@
         </div>
         
         <p class="text-[#8C6070] text-[10px] md:text-xs tracking-[0.3em] uppercase font-medium relative z-10">
-          *지금 분석을 완료하신 분들께만 오픈되는 프라이빗 혜택입니다.
+          *더 디테일한 분석결과와 맞춤형 고유 주파수를 이메일로 보내드립니니다.
         </p>
       </div>
 
@@ -182,21 +187,30 @@
               </div>
               <input type="checkbox" v-model="agreeTerms" class="hidden" />
               <span class="text-[#B5A598] text-xs md:text-sm font-light leading-snug">
-                사전예약 및 맞춤 맞춤형 주파수 발송을 위한 <NuxtLink to="/terms" target="_blank" class="text-[#D49A99] font-medium underline underline-offset-4 decoration-[#D49A99]/40 hover:decoration-[#D49A99] hover:text-[#F7F2EB] transition-colors">개인정보 수집 및 제3자 제공</NuxtLink>에 동의합니다.
+                사전예약 및 맞춤 맞춤형 고유 주파수 발송을 위한 <NuxtLink to="/terms" target="_blank" class="text-[#D49A99] font-medium underline underline-offset-4 decoration-[#D49A99]/40 hover:decoration-[#D49A99] hover:text-[#F7F2EB] transition-colors">개인정보 수집 및 제3자 제공</NuxtLink>에 동의합니다.
               </span>
             </label>
 
             <button 
-            @click="submitLead" 
-             :disabled="!email.includes('@') || !agreeTerms || isSubmitting" 
-               class="w-full h-18 md:h-20 bg-gradient-to-r from-[#F7F2EB] to-[#D49A99] text-[#120D1A] text-lg font-black rounded-2xl disabled:opacity-20 disabled:cursor-not-allowed transition-all hover:shadow-[0_15px_40px_rgba(212,154,153,0.3)] active:scale-95 flex justify-center items-center"
-                >
-            {{ isSubmitting ? '주파수 연성 중...' : '이메일로 맞춤형 주파수 샘플 받기' }}
-</button>
+              @click="submitLead" 
+              :disabled="!email.includes('@') || !agreeTerms || isSubmitting" 
+              class="w-full h-18 md:h-20 bg-gradient-to-r from-[#F7F2EB] to-[#D49A99] text-[#120D1A] text-lg font-black rounded-2xl disabled:opacity-20 disabled:cursor-not-allowed transition-all hover:shadow-[0_15px_40px_rgba(212,154,153,0.3)] active:scale-95 flex justify-center items-center"
+            >
+              {{ isSubmitting ? '주파수 만드는 중...' : '이메일로 맞춤형 주파수 샘플 받기' }}
+            </button>
           </div>
         </div>
       </div>
-    </div>
+
+      <div class="pt-8 relative z-10 flex justify-center">
+        <button @click="shareLink" class="inline-flex items-center gap-3 text-[#D49A99] text-base md:text-lg font-medium hover:text-[#F7F2EB] transition-all group border border-transparent hover:border-[#D49A99]/30 bg-[#D49A99]/5 hover:bg-[#D49A99]/10 px-8 py-4 rounded-full shadow-sm hover:shadow-[0_0_15px_rgba(212,154,153,0.1)]">
+          <svg class="w-6 h-6 opacity-80 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+          기연당 공유하기
+        </button>
+      </div>
+      </div>
   </div>
 </template>
 
@@ -389,7 +403,6 @@ const submitLead = async () => {
   isSubmitting.value = true;
   
   try {
-    // formData에서 생년월일 정보를 안전하게 추출 (DB 기록용)
     const year = props.formData?.birthYear || '';
     const month = props.formData?.birthMonth || '';
     const day = props.formData?.birthDay || '';
@@ -401,28 +414,52 @@ const submitLead = async () => {
     const minute = props.formData?.minute || '';
     const birthTime = isUnknown ? '모름' : (hour ? `${ampm} ${hour}:${minute}` : '');
 
-    // useFetch 대신 이벤트 핸들러용 $fetch 사용
     await $fetch('/api/prescribe', {
       method: 'POST',
       body: {
-        email: email.value, // 기존에 선언된 email ref 사용
+        email: email.value, 
         name: props.formData?.name || '무명씨',
         focus: props.formData?.mainInterest || '일반',
         resultData: props.result,
-        // DB(leads 테이블) 기록을 위한 추가 데이터
         birthDate: birthDate,
         birthTime: birthTime
       }
     });
 
-    // $fetch는 에러가 나면 catch로 빠지므로, 여기까지 오면 무조건 성공입니다.
-    alert("처방전이 이메일로 전송되었습니다. 3분 뒤 메일함을 확인해 주세요.");
+    alert("이메일을 발송해드렸습니다. 3분 뒤 메일함을 확인해 주세요.");
     
   } catch (err) {
     console.error("메일 발송 실패 상세:", err);
     alert("발송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
   } finally {
     isSubmitting.value = false;
+  }
+}
+
+// 🌟 바이럴을 위한 공유하기 로직 (모바일/데스크톱 모두 지원)
+const shareLink = async () => {
+  const shareData = {
+    title: '기연당(GIYEONDANG) - 무료 1:1 사주 맞춤 처방',
+    text: '어긋난 인연의 기운을 맞춰줄 당신만의 주파수를 찾아보세요.',
+    url: window.location.origin // 메인 페이지(루트 도메인)로 연결
+  };
+
+  // 모바일 환경 (Web Share API 지원 시 카톡, 인스타 등 네이티브 창 띄움)
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      console.log('공유 취소 또는 에러', err);
+    }
+  } 
+  // 데스크톱 환경 (Web Share API 미지원 시 클립보드에 링크 복사)
+  else {
+    try {
+      await navigator.clipboard.writeText(shareData.url);
+      alert('기연당 링크가 복사되었습니다. 친구에게 전달해보세요!');
+    } catch (err) {
+      alert('링크 복사에 실패했습니다. 주소창의 링크를 복사해주세요.');
+    }
   }
 }
 

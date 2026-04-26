@@ -16,15 +16,15 @@
               <span class="w-1.5 h-1.5 rounded-full bg-[#D49A99]"></span> 명리학의 공명을 찾는 서비스 : 기연당
             </div>
             <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#F7F2EB] leading-[1.35] break-keep">
-              간절히 듣던 유튜브 주파수,<br>오히려 인연이 더 멀어지는<br/>
-              <span class="text-[#D49A99] font-light italic mt-2 block text-2xl md:text-4xl">느낌이 들진 않으셨나요?</span>
+              유튜브의 양산형 주파수,<br>효과 있었나요?<br/>
+              <span class="text-[#D49A99] font-light italic mt-2 block text-2xl md:text-4xl">내 사주에 맞는 주파수를 찾아보세요.</span>
             </h1>
             <p class="text-[#B5A598] text-sm md:text-base font-light leading-relaxed break-keep">
               나와 맞지않는 주파수는 운의 흐름을 교란시킵니다. 사주에<br> 예를 들어 '물(水)'이 넘치는 사람에게 물의 주파수가 섞이면, 물길은 거세지고 운은 떠내려갑니다. <br class="hidden md:block"><br class="hidden md:block">
               역술인의 사주 분석과 뇌파 연구진의 사운드 테라피(FFR)를 결합하여, 당신의 어긋난 기운을 정확히 메워 개운 방법을 찾아드립니다.
             </p>
             <button @click="scrollToForm" class="hidden md:flex mt-4 px-8 py-4 bg-gradient-to-r from-[#F7F2EB] to-[#D49A99] text-[#120D1A] font-bold rounded-2xl shadow-[0_10px_40px_rgba(212,154,153,0.3)] transition-all hover:scale-[1.02] active:scale-95 items-center gap-3 tracking-wide">
-              (무료)내 운명의 진짜 주파수 찾기 <span class="text-xl font-light">→</span>
+              (무료)나에게 딱 맞는 주파수 찾기 <span class="text-xl font-light">→</span>
             </button>
           </div>
 
