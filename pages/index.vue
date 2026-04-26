@@ -20,11 +20,11 @@
               <span class="text-[#D49A99] font-light italic mt-2 block text-2xl md:text-4xl">느낌이 들진 않으셨나요?</span>
             </h1>
             <p class="text-[#B5A598] text-sm md:text-base font-light leading-relaxed break-keep">
-              사주에 '물(水)'이 넘치는 사람이 물의 파동을 들으면, 인연은 더 떠내려가기 마련입니다. 저희 팀은 이 안타까운 사실을 해결하고 싶었습니다.<br class="hidden md:block"><br class="hidden md:block">
-              역술인의 사주 분석과 뇌파 연구진의 사운드 테라피(FFR)를 결합하여, 당신의 어긋난 기운을 정확히 메워줄 단 하나의 파동을 찾아드립니다.
+              나와 맞지않는 주파수는 운의 흐름을 교란시킵니다. 사주에<br> 예를 들어 '물(水)'이 넘치는 사람에게 물의 주파수가 섞이면, 물길은 거세지고 운은 떠내려갑니다. <br class="hidden md:block"><br class="hidden md:block">
+              역술인의 사주 분석과 뇌파 연구진의 사운드 테라피(FFR)를 결합하여, 당신의 어긋난 기운을 정확히 메워 개운 방법을 찾아드립니다.
             </p>
             <button @click="scrollToForm" class="hidden md:flex mt-4 px-8 py-4 bg-gradient-to-r from-[#F7F2EB] to-[#D49A99] text-[#120D1A] font-bold rounded-2xl shadow-[0_10px_40px_rgba(212,154,153,0.3)] transition-all hover:scale-[1.02] active:scale-95 items-center gap-3 tracking-wide">
-              내 운명의 진짜 주파수 찾기 <span class="text-xl font-light">→</span>
+              (무료)내 운명의 진짜 주파수 찾기 <span class="text-xl font-light">→</span>
             </button>
           </div>
 
@@ -41,7 +41,7 @@
                 </div>
               </div>
               <div class="text-center w-full z-10">
-                <h4 class="text-[#F7F2EB] font-medium text-lg mb-1 tracking-wide">마음의 파동을 맞추는 중</h4>
+                <h4 class="text-[#F7F2EB] font-medium text-lg mb-1 tracking-wide">고유 주파수 맞추는 중</h4>
                 <p class="text-[#B5A598] text-[10px] md:text-xs mb-8 font-light italic">Re-aligning your energy...</p>
               </div>
             </div>
@@ -55,7 +55,7 @@
         <div class="max-w-4xl mx-auto mb-20 space-y-12 bg-[#120D1A]/50 border border-[#2A1F2D] rounded-[3rem] p-8 md:p-14 shadow-xl">
           <div class="text-center space-y-4">
             <h3 class="text-2xl md:text-3xl font-light text-[#F7F2EB] tracking-tight">
-              막연한 위로가 아닌, <strong class="text-[#D49A99] font-medium">검증된 과학과 데이터</strong>
+              나에게 딱 맞는, <strong class="text-[#D49A99] font-medium">명리학에 맞춘 세타파</strong>
             </h3>
             <p class="text-[#B5A598] text-sm md:text-base font-light break-keep max-w-2xl mx-auto leading-relaxed">
               기연당은 수만 건의 사주 데이터와 뇌파 동조(FFR) 논문을 바탕으로, 당신의 무의식에 직접 닿는 실질적인 해결책을 제시합니다.
@@ -82,15 +82,16 @@
         </div>
 
         <div class="w-full max-w-2xl mx-auto z-20 group scroll-mt-24" id="form-section">
-          <div class="bg-[#120D1A]/90 border border-[#2A1F2D] rounded-[2.5rem] p-6 sm:p-10 md:p-12 backdrop-blur-2xl shadow-2xl">
+          <div class="bg-[#120D1A]/90 border border-[#2A1F2D] rounded-[2.5rem] p-6 sm:p-10 md:p-12 backdrop-blur-2xl shadow-2xl transition-all duration-500"
+               :class="{ 'border-red-500/30 shadow-[0_0_40px_rgba(239,68,68,0.1)]': showErrors && missingFields.length > 0 }">
             <div class="text-center mb-12">
-              <h3 class="text-2xl md:text-3xl font-light text-[#F7F2EB] mb-3 tracking-tight">조심스럽게, 당신의 이야기를 들려주세요.</h3>
-              <p class="text-[#D49A99] text-xs md:text-sm font-light">가장 정확한 진단과 처방을 위해 아래 정보가 필요합니다.</p>
+              <h3 class="text-2xl md:text-3xl font-light text-[#F7F2EB] mb-3 tracking-tight">내 사주에 부족한 점, 좋은 것들을 찾아드려요.</h3>
+              <p class="text-[#D49A99] text-xs md:text-sm font-light">정확한 사주 분석을 위해 아래 정보를 입력해 주세요.</p>
             </div>
             
             <div class="space-y-12">
-              <div class="space-y-5">
-                <label class="block text-[10px] font-bold tracking-[0.2em] text-[#8C6070] uppercase">1. 지금 가장 아프고 간절한 부분</label>
+              <div class="space-y-5" :class="{ 'p-4 rounded-3xl bg-red-500/5 border border-red-500/30': showErrors && missingFields.includes('interest') }">
+                <label class="block text-[10px] font-bold tracking-[0.2em] text-[#8C6070] uppercase">1. 운세 선택</label>
                 <div class="grid grid-cols-3 gap-3">
                   <button v-for="cat in goalCategories" :key="cat.id" @click="selectMainCategory(cat.id)"
                     :class="['relative p-4 rounded-2xl border transition-all duration-500 text-xs md:text-sm flex flex-col items-center justify-center gap-2 font-medium',
@@ -117,38 +118,72 @@
 
               <div class="space-y-2">
                 <label class="block text-[10px] font-bold tracking-[0.2em] text-[#8C6070] uppercase">2. 부르기 편한 이름 (가명도 좋습니다)</label>
-                <input v-model="formData.name" type="text" placeholder="이름 입력" class="w-full bg-transparent border-b border-[#2A1F2D] px-2 py-4 text-[#F7F2EB] outline-none focus:border-[#D49A99] transition-colors text-sm font-light placeholder-[#4A3B4E]" />
+                <input v-model="formData.name" type="text" placeholder="이름 입력" 
+                  :class="['w-full bg-transparent border-b px-2 py-4 outline-none transition-colors text-sm font-light placeholder-[#4A3B4E]', 
+                           showErrors && missingFields.includes('name') ? 'border-red-400/80 bg-red-400/5 text-red-200' : 'border-[#2A1F2D] focus:border-[#D49A99] text-[#F7F2EB]']" />
               </div>
 
               <div class="space-y-2">
                 <label class="block text-[10px] font-bold tracking-[0.2em] text-[#8C6070] uppercase">3. 생년월일 (양력 기준)</label>
                 <div class="grid grid-cols-3 gap-4">
-                  <input v-model="formData.birthYear" type="number" placeholder="YYYY" class="bg-transparent border-b border-[#2A1F2D] text-center py-4 text-[#F7F2EB] outline-none focus:border-[#D49A99] text-sm font-light placeholder-[#4A3B4E]" />
-                  <input v-model="formData.birthMonth" type="number" placeholder="MM" class="bg-transparent border-b border-[#2A1F2D] text-center py-4 text-[#F7F2EB] outline-none focus:border-[#D49A99] text-sm font-light placeholder-[#4A3B4E]" />
-                  <input v-model="formData.birthDay" type="number" placeholder="DD" class="bg-transparent border-b border-[#2A1F2D] text-center py-4 text-[#F7F2EB] outline-none focus:border-[#D49A99] text-sm font-light placeholder-[#4A3B4E]" />
+                  <input v-model="formData.birthYear" @input="enforceLimits" type="text" inputmode="numeric" placeholder="YYYY" 
+                    :class="['bg-transparent border-b text-center py-4 outline-none text-sm font-light placeholder-[#4A3B4E] transition-colors',
+                             showErrors && missingFields.includes('birthYear') ? 'border-red-400/80 bg-red-400/5 text-red-200' : 'border-[#2A1F2D] focus:border-[#D49A99] text-[#F7F2EB]']" />
+                  <input v-model="formData.birthMonth" @input="enforceLimits" type="text" inputmode="numeric" placeholder="MM" 
+                    :class="['bg-transparent border-b text-center py-4 outline-none text-sm font-light placeholder-[#4A3B4E] transition-colors',
+                             showErrors && missingFields.includes('birthMonth') ? 'border-red-400/80 bg-red-400/5 text-red-200' : 'border-[#2A1F2D] focus:border-[#D49A99] text-[#F7F2EB]']" />
+                  <input v-model="formData.birthDay" @input="enforceLimits" type="text" inputmode="numeric" placeholder="DD" 
+                    :class="['bg-transparent border-b text-center py-4 outline-none text-sm font-light placeholder-[#4A3B4E] transition-colors',
+                             showErrors && missingFields.includes('birthDay') ? 'border-red-400/80 bg-red-400/5 text-red-200' : 'border-[#2A1F2D] focus:border-[#D49A99] text-[#F7F2EB]']" />
                 </div>
               </div>
 
-              <div class="space-y-2">
+              <div class="space-y-4">
                 <div class="flex justify-between items-center pr-2">
-                  <label class="block text-[10px] font-bold tracking-[0.2em] text-[#8C6070] uppercase">4. 태어난 시간</label>
-                  <label class="flex items-center gap-2 text-[10px] text-[#B5A598] cursor-pointer">
-                    <input type="checkbox" v-model="formData.isTimeUnknown" class="w-3.5 h-3.5 rounded-sm border-[#2A1F2D] accent-[#D49A99] bg-[#0E0A14]" />
-                    <span class="font-light">시간을 잘 모릅니다 (표준 파동으로 대체)</span>
-                  </label>
+                  <label class="block text-[10px] font-bold tracking-[0.2em] text-[#8C6070] uppercase mt-2">4. 태어난 시간</label>
+                  
+                  <div class="flex items-center gap-1 bg-[#0A0710] border border-[#2A1F2D] rounded-xl p-1 shadow-inner">
+                    <button @click="formData.isTimeUnknown = false" 
+                      :class="!formData.isTimeUnknown ? 'bg-gradient-to-br from-[#D49A99] to-[#8C6070] text-[#120D1A] font-bold shadow-[0_2px_10px_rgba(212,154,153,0.3)]' : 'text-[#8C6070] font-light hover:text-[#D49A99]/80'" 
+                      class="px-3 md:px-4 py-1.5 text-[10px] md:text-xs rounded-lg transition-all duration-300 w-[72px] md:w-24 text-center">
+                      정확히 앎
+                    </button>
+                    <button @click="formData.isTimeUnknown = true" 
+                      :class="formData.isTimeUnknown ? 'bg-[#2A1F2D] text-[#E8DCC4] font-medium shadow-md' : 'text-[#8C6070] font-light hover:text-[#E8DCC4]/80'" 
+                      class="px-3 md:px-4 py-1.5 text-[10px] md:text-xs rounded-lg transition-all duration-300 w-[72px] md:w-24 text-center">
+                      잘 모름
+                    </button>
+                  </div>
                 </div>
-                <div class="grid grid-cols-3 gap-4 transition-opacity duration-300" :class="{ 'opacity-20 pointer-events-none': formData.isTimeUnknown }">
-                  <select v-model="formData.ampm" class="bg-transparent border-b border-[#2A1F2D] text-center py-4 text-[#F7F2EB] outline-none focus:border-[#D49A99] text-sm font-light appearance-none">
-                    <option value="AM">오전</option><option value="PM">오후</option>
+
+                <div class="grid grid-cols-3 gap-4 transition-all duration-500" 
+                     :class="formData.isTimeUnknown ? 'opacity-20 pointer-events-none grayscale blur-[1px]' : 'opacity-100'">
+                  <select v-model="formData.ampm" class="bg-transparent border-b border-[#2A1F2D] text-center py-4 text-[#F7F2EB] outline-none focus:border-[#D49A99] text-sm font-light appearance-none cursor-pointer">
+                    <option value="AM" class="bg-[#120D1A]">오전</option><option value="PM" class="bg-[#120D1A]">오후</option>
                   </select>
-                  <input v-model="formData.hour" type="number" placeholder="HH" class="bg-transparent border-b border-[#2A1F2D] text-center py-4 text-[#F7F2EB] outline-none focus:border-[#D49A99] text-sm font-light placeholder-[#4A3B4E]" />
-                  <input v-model="formData.minute" type="number" placeholder="MM" class="bg-transparent border-b border-[#2A1F2D] text-center py-4 text-[#F7F2EB] outline-none focus:border-[#D49A99] text-sm font-light placeholder-[#4A3B4E]" />
+                  <input v-model="formData.hour" @input="enforceLimits" type="text" inputmode="numeric" placeholder="HH" 
+                    :class="['bg-transparent border-b text-center py-4 outline-none text-sm font-light placeholder-[#4A3B4E] transition-colors',
+                             showErrors && !formData.isTimeUnknown && missingFields.includes('hour') ? 'border-red-400/80 bg-red-400/5 text-red-200' : 'border-[#2A1F2D] focus:border-[#D49A99] text-[#F7F2EB]']" />
+                  <input v-model="formData.minute" @input="enforceLimits" type="text" inputmode="numeric" placeholder="MM" 
+                    :class="['bg-transparent border-b text-center py-4 outline-none text-sm font-light placeholder-[#4A3B4E] transition-colors',
+                             showErrors && !formData.isTimeUnknown && missingFields.includes('minute') ? 'border-red-400/80 bg-red-400/5 text-red-200' : 'border-[#2A1F2D] focus:border-[#D49A99] text-[#F7F2EB]']" />
                 </div>
               </div>
 
-              <button @click="startAnalysis" :disabled="!isFormValid" class="w-full h-18 md:h-20 mt-6 bg-gradient-to-r from-[#F7F2EB] via-[#E8DCC4] to-[#D49A99] disabled:opacity-20 text-[#120D1A] font-black rounded-[1.5rem] shadow-[0_15px_40px_rgba(212,154,153,0.2)] active:scale-95 transition-all text-lg tracking-wide overflow-hidden relative group">
-                <div class="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-12 group-hover:animate-shine"></div>
-                <span>나만의 주파수 진단 시작하기</span>
+              <div v-if="showErrors && missingFields.length > 0" class="mt-8 text-center animate-fade-in-up">
+                <div class="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-2xl text-xs md:text-sm font-light break-keep leading-relaxed max-w-sm">
+                  <span class="animate-pulse shrink-0">⚠️</span> 
+                  정확한 파동 계산을 위해 붉게 표시된 정보를 마저 채워주세요.
+                </div>
+              </div>
+
+              <button @click="startAnalysis" 
+                :class="missingFields.length === 0 
+                  ? 'bg-gradient-to-r from-[#F7F2EB] via-[#E8DCC4] to-[#D49A99] text-[#120D1A] shadow-[0_15px_40px_rgba(212,154,153,0.2)] hover:scale-[1.02]' 
+                  : 'bg-[#1A121F] text-[#4A3B4E] border border-[#2A1F2D] cursor-pointer hover:bg-[#24192B]'" 
+                class="w-full h-18 md:h-20 mt-6 font-black rounded-[1.5rem] active:scale-95 transition-all duration-500 text-lg tracking-wide overflow-hidden relative group">
+                <div v-if="missingFields.length === 0" class="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-12 group-hover:animate-shine"></div>
+                <span>지금 내 운세 진단하기 (무료)</span>
               </button>
             </div>
           </div>
@@ -192,6 +227,7 @@ import { ref, reactive, computed } from 'vue'
 const phase = ref(1) 
 const loading = ref(false)
 const result = ref(null) 
+const showErrors = ref(false) // 폼 에러 노출 여부 상태
 
 const loadingSteps = ref([
   '입력하신 생년월일로 60갑자 명식을 세우고 있습니다...',
@@ -216,27 +252,86 @@ const formData = reactive({
 const currentSubs = computed(() => goalCategories.find(c => c.id === formData.mainInterest)?.subs || [])
 const selectMainCategory = (id) => { formData.mainInterest = id; formData.subInterest = ''; }
 
-const isFormValid = computed(() => {
-  return formData.name && formData.mainInterest && formData.subInterest && formData.birthYear;
-})
+// 🌟 입력값 글자수 및 한계치 강제 조정 함수 (문자열 입력을 차단하고 모바일 키패드 최적화)
+const enforceLimits = () => {
+  let y = String(formData.birthYear).replace(/[^0-9]/g, '');
+  if (y.length > 4) y = y.slice(0, 4);
+  formData.birthYear = y;
+
+  let m = String(formData.birthMonth).replace(/[^0-9]/g, '');
+  if (m.length > 2) m = m.slice(0, 2);
+  if (parseInt(m) > 12) m = '12';
+  formData.birthMonth = m;
+
+  let d = String(formData.birthDay).replace(/[^0-9]/g, '');
+  if (d.length > 2) d = d.slice(0, 2);
+  if (parseInt(d) > 31) d = '31';
+  formData.birthDay = d;
+
+  let h = String(formData.hour).replace(/[^0-9]/g, '');
+  if (h.length > 2) h = h.slice(0, 2);
+  if (parseInt(h) > 12) h = '12';
+  formData.hour = h;
+
+  let min = String(formData.minute).replace(/[^0-9]/g, '');
+  if (min.length > 2) min = min.slice(0, 2);
+  if (parseInt(min) > 59) min = '59';
+  formData.minute = min;
+}
+
+// 🌟 누락되거나 규격에 맞지 않는 항목들을 실시간으로 잡아내는 Computed
+const missingFields = computed(() => {
+  const missing = [];
+  
+  if (!formData.name.trim()) missing.push('name');
+  if (!formData.mainInterest || !formData.subInterest) missing.push('interest');
+  
+  if (!formData.birthYear || String(formData.birthYear).length !== 4) missing.push('birthYear');
+  
+  const m = parseInt(formData.birthMonth);
+  if (isNaN(m) || m < 1 || m > 12) missing.push('birthMonth');
+  
+  const d = parseInt(formData.birthDay);
+  if (isNaN(d) || d < 1 || d > 31) missing.push('birthDay');
+  
+  if (!formData.isTimeUnknown) {
+    const h = parseInt(formData.hour);
+    if (isNaN(h) || h < 1 || h > 12) missing.push('hour');
+    
+    const min = parseInt(formData.minute);
+    if (isNaN(min) || min < 0 || min > 59) missing.push('minute');
+    if (String(formData.minute).trim() === '') missing.push('minute'); // 0은 통과, 빈칸은 에러
+  }
+  
+  return missing;
+});
 
 const scrollToForm = () => document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' })
 
-// 🔥 절대 멈추거나 튕기지 않는 초강력 분석 로직
+// 🌟 시작 버튼 로직 (에러 검증 포함)
 const startAnalysis = async () => {
-  if (!isFormValid.value) return;
+  // 정보 누락 시 빨간 테두리 띄우고 스크롤 이동
+  if (missingFields.value.length > 0) {
+    showErrors.value = true;
+    
+    // 모바일 환경을 고려해 약간 위로 스크롤하여 에러메시지와 폼이 한눈에 보이게 조정
+    const formEl = document.getElementById('form-section');
+    if(formEl) {
+      const y = formEl.getBoundingClientRect().top + window.pageYOffset - 50;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    return;
+  }
   
-  // 1. 상태 변경 (로딩 시작)
+  // 성공 시 에러 상태 초기화 및 로딩 시작
+  showErrors.value = false;
   loading.value = true;
   phase.value = 1.5; 
   currentLoadingStep.value = 0;
   
-  // 2. 🔥 가장 핵심: Vue가 로딩 화면을 먼저 DOM에 그리도록 0.05초 강제 대기
   await new Promise(resolve => setTimeout(resolve, 50));
-  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // 3. 로딩 텍스트 애니메이션 시작
   const loadingInterval = setInterval(() => {
     if (currentLoadingStep.value < loadingSteps.value.length - 1) {
       currentLoadingStep.value++;
@@ -244,13 +339,9 @@ const startAnalysis = async () => {
   }, 800);
   
   try {
-    // 4. API 호출 시간 측정 시작
     const startTime = Date.now();
-    
-    // API 통신 (백엔드로 데이터 전송)
     const response = await $fetch('/api/analyze-viral', { method: 'POST', body: formData });
     
-    // 5. 로딩창 심리적 유지 시간 계산 (최소 4초 보장)
     const elapsedTime = Date.now() - startTime;
     if (elapsedTime < 4000) {
       await new Promise(resolve => setTimeout(resolve, 4000 - elapsedTime));
@@ -258,12 +349,10 @@ const startAnalysis = async () => {
 
     clearInterval(loadingInterval);
 
-    // 6. 결과 화면으로 완벽하게 전환
     if (response) {
       result.value = response.data || response;
       phase.value = 2; 
       
-      // 전환 직후 스크롤을 맨 위로
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 50);
@@ -276,7 +365,7 @@ const startAnalysis = async () => {
     const exactError = error.data?.statusMessage || error.message || '알 수 없는 서버 오류';
     alert(`🚨 [오류 발생]\n이유: ${exactError}\n\n입력하신 데이터를 확인하시거나 잠시 후 다시 시도해주세요.`);
     
-    phase.value = 1; // 에러 시 다시 폼으로 복귀
+    phase.value = 1; 
   } finally {
     loading.value = false;
   }
