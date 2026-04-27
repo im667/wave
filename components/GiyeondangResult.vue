@@ -61,7 +61,7 @@
     </section>
 
     <section class="space-y-12 relative">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl bg-[#D49A99]/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl bg-[#D49A99]/10 blur-[80px] md:blur-[120px] rounded-full pointer-events-none"></div>
 
       <div class="text-center space-y-4 mb-16 relative z-10">
         <h3 class="text-2xl md:text-3xl font-light text-[#F7F2EB] tracking-tight">결핍된 에너지를 채우는 <strong class="text-[#D49A99] font-medium">나만의 고유 진동수</strong></h3>
@@ -76,11 +76,11 @@
         <div class="relative z-10 w-36 h-36 md:w-48 md:h-48 rounded-full bg-[#D49A99]/5 border border-[#D49A99]/40 flex items-center justify-center shrink-0 shadow-[inset_0_0_40px_rgba(212,154,153,0.2)] group-hover:scale-105 transition-transform duration-700">
           <div class="absolute inset-0 rounded-full border border-[#D49A99]/20 animate-ping opacity-30" style="animation-duration: 3s;"></div>
           <div class="flex items-end justify-center gap-2.5 w-20 h-16">
-            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)]" style="height: 50%"></div>
-            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)]" style="height: 100%; animation-delay: 0.2s"></div>
-            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)]" style="height: 70%; animation-delay: 0.4s"></div>
-            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)]" style="height: 40%; animation-delay: 0.1s"></div>
-            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)]" style="height: 80%; animation-delay: 0.3s"></div>
+            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)] origin-bottom" style="height: 100%; --target-scale: 0.5;"></div>
+            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)] origin-bottom" style="height: 100%; --target-scale: 1.0; animation-delay: 0.2s"></div>
+            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)] origin-bottom" style="height: 100%; --target-scale: 0.7; animation-delay: 0.4s"></div>
+            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)] origin-bottom" style="height: 100%; --target-scale: 0.4; animation-delay: 0.1s"></div>
+            <div class="w-2.5 bg-gradient-to-t from-[#8C6070] to-[#D49A99] rounded-full animate-wave shadow-[0_0_10px_rgba(212,154,153,0.8)] origin-bottom" style="height: 100%; --target-scale: 0.8; animation-delay: 0.3s"></div>
           </div>
         </div>
 
@@ -98,6 +98,7 @@
         </div>
       </div>
     </section>
+   
 
     <section v-if="currentInterestData?.prescription" class="space-y-12 px-2">
       <div class="text-center space-y-3">
@@ -136,7 +137,7 @@
       </div>
     </section>
 
-    <div class="mt-32 pt-24 pb-20 border-t border-[#2A1F2D] text-center space-y-14 relative">
+   <div class="mt-32 pt-24 pb-20 border-t border-[#2A1F2D] text-center space-y-14 relative overflow-hidden">
       <div v-if="!isWtpConfirmed" class="space-y-12 animate-fade-in max-w-2xl mx-auto px-4">
         
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#D49A99]/10 via-transparent to-transparent pointer-events-none animate-pulse-slow z-0"></div>
@@ -144,7 +145,7 @@
         <div class="space-y-6 relative z-10">
           <h3 class="text-3xl md:text-[2.75rem] font-bold text-[#F7F2EB] leading-[1.3] tracking-tight">
             {{ formData.name }}님만을 위해 완성된<br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D49A99] to-[#F7F2EB]">사주 분석 리포트 +<br> 개운 주파수</span>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D49A99] to-[#F7F2EB]">맞춤형 고해상도 무손실 개운 주파수</span>
           </h3>
           <p class="text-[#B5A598] text-base md:text-lg font-light leading-relaxed break-keep px-4">
             모든 분석이 끝났습니다. 이제 방금 도출된 <strong class="text-white">{{ calculatedFrequency.hz }}</strong> 나에게 딱 맞는 주파수로 기운의 혼선을 정리하세요.
@@ -225,6 +226,20 @@ const isSubmitting = ref(false)
 const isWtpConfirmed = ref(false)
 const email = ref('')
 const agreeTerms = ref(false)
+
+onMounted(() => {
+  // 브라우저의 스크롤 복원 기능을 일시적으로 끄고 0,0으로 이동
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  
+  // 10ms 뒤에 즉시 스크롤 (instant behavior가 핵심입니다)
+  setTimeout(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, 10);
+});
 
 // 🔥 어떤 형태의 데이터(JSON / Supabase Flatten)가 들어와도 완벽하게 찾아내는 초강력 스캐너
 const currentInterestData = computed(() => {
@@ -466,18 +481,27 @@ const shareLink = async () => {
 </script>
 
 <style scoped>
+.animate-wave { animation: wave 1.5s ease-in-out infinite alternate; }
+@keyframes wave { 
+  0% { transform: scaleY(0.2); opacity: 0.3; } 
+  100% { transform: scaleY(var(--target-scale)); opacity: 1; } 
+}
+
 .animate-fade-in-up { animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
 .animate-fade-in { animation: fadeIn 0.8s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
 .animate-pulse-slow { animation: pulse 4s ease-in-out infinite alternate; }
 @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 0.8; transform: scale(1.05); } }
-.animate-wave { animation: wave 1.5s ease-in-out infinite alternate; }
-@keyframes wave { 0% { height: 20%; opacity: 0.3; } 100% { height: 100%; opacity: 1; } }
+
 .animate-gradient-x { background-size: 200% 200%; animation: gradientX 3s ease infinite; }
 @keyframes gradientX { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
 .animate-shine { animation: shine 3s infinite; }
 @keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+
 .animate-bounce-x { animation: bounceX 1.5s infinite; }
 @keyframes bounceX { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
 </style>
