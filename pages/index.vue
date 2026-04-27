@@ -48,7 +48,7 @@
           </div>
         </div>
 
-        <button @click="scrollToForm" class="md:hidden w-full mb-16 px-8 py-4 bg-gradient-to-r from-[#F7F2EB] to-[#D49A99] text-[#120D1A] font-bold rounded-2xl shadow-[0_10px_40px_rgba(212,154,153,0.3)] active:scale-95 flex justify-center items-center tracking-wide">
+        <button @click="scrollToForm" class="md:hidden w-full mb-16 px-8 py-5 bg-gradient-to-r from-[#F7F2EB] to-[#D49A99] text-[#120D1A] font-bold rounded-2xl shadow-[0_10px_40px_rgba(212,154,153,0.3)] active:scale-95 flex justify-center items-center tracking-wide">
           내 운명의 진짜 주파수 찾기
         </button>
 
@@ -181,7 +181,7 @@
                 :class="missingFields.length === 0 
                   ? 'bg-gradient-to-r from-[#F7F2EB] via-[#E8DCC4] to-[#D49A99] text-[#120D1A] shadow-[0_15px_40px_rgba(212,154,153,0.2)] hover:scale-[1.02]' 
                   : 'bg-[#1A121F] text-[#4A3B4E] border border-[#2A1F2D] cursor-pointer hover:bg-[#24192B]'" 
-                class="w-full h-18 md:h-20 mt-6 font-black rounded-[1.5rem] active:scale-95 transition-all duration-500 text-lg tracking-wide overflow-hidden relative group">
+                class="w-full py-6 md:py-7 mt-6 font-black rounded-[1.5rem] active:scale-95 transition-all duration-500 text-lg md:text-xl tracking-wide overflow-hidden relative group flex items-center justify-center">
                 <div v-if="missingFields.length === 0" class="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-12 group-hover:animate-shine"></div>
                 <span>지금 내 운세 진단하기 (무료)</span>
               </button>
@@ -222,7 +222,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, nextTick } from 'vue' // 🌟 nextTick 추가됨
 
 const phase = ref(1) 
 const loading = ref(false)
@@ -252,7 +252,7 @@ const formData = reactive({
 const currentSubs = computed(() => goalCategories.find(c => c.id === formData.mainInterest)?.subs || [])
 const selectMainCategory = (id) => { formData.mainInterest = id; formData.subInterest = ''; }
 
-// 🌟 입력값 글자수 및 한계치 강제 조정 함수 (문자열 입력을 차단하고 모바일 키패드 최적화)
+// 🌟 입력값 글자수 및 한계치 강제 조정 함수
 const enforceLimits = () => {
   let y = String(formData.birthYear).replace(/[^0-9]/g, '');
   if (y.length > 4) y = y.slice(0, 4);
@@ -279,42 +279,32 @@ const enforceLimits = () => {
   formData.minute = min;
 }
 
-// 🌟 누락되거나 규격에 맞지 않는 항목들을 실시간으로 잡아내는 Computed
+// 🌟 폼 검증 로직
 const missingFields = computed(() => {
   const missing = [];
-  
   if (!formData.name.trim()) missing.push('name');
   if (!formData.mainInterest || !formData.subInterest) missing.push('interest');
-  
   if (!formData.birthYear || String(formData.birthYear).length !== 4) missing.push('birthYear');
-  
   const m = parseInt(formData.birthMonth);
   if (isNaN(m) || m < 1 || m > 12) missing.push('birthMonth');
-  
   const d = parseInt(formData.birthDay);
   if (isNaN(d) || d < 1 || d > 31) missing.push('birthDay');
-  
   if (!formData.isTimeUnknown) {
     const h = parseInt(formData.hour);
     if (isNaN(h) || h < 1 || h > 12) missing.push('hour');
-    
     const min = parseInt(formData.minute);
     if (isNaN(min) || min < 0 || min > 59) missing.push('minute');
-    if (String(formData.minute).trim() === '') missing.push('minute'); // 0은 통과, 빈칸은 에러
+    if (String(formData.minute).trim() === '') missing.push('minute');
   }
-  
   return missing;
 });
 
 const scrollToForm = () => document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' })
 
-// 🌟 시작 버튼 로직 (에러 검증 포함)
+// 🌟 시작 버튼 로직
 const startAnalysis = async () => {
-  // 정보 누락 시 빨간 테두리 띄우고 스크롤 이동
   if (missingFields.value.length > 0) {
     showErrors.value = true;
-    
-    // 모바일 환경을 고려해 약간 위로 스크롤하여 에러메시지와 폼이 한눈에 보이게 조정
     const formEl = document.getElementById('form-section');
     if(formEl) {
       const y = formEl.getBoundingClientRect().top + window.pageYOffset - 50;
@@ -323,7 +313,6 @@ const startAnalysis = async () => {
     return;
   }
   
-  // 성공 시 에러 상태 초기화 및 로딩 시작
   showErrors.value = false;
   loading.value = true;
   phase.value = 1.5; 
@@ -353,18 +342,20 @@ const startAnalysis = async () => {
       result.value = response.data || response;
       phase.value = 2; 
       
+      // 🌟 스크롤 씹힘 방지: 렌더링 후 최상단 이동
+      await nextTick(); 
       setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 50);
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 100);
     }
 
   } catch (error) {
     clearInterval(loadingInterval);
     console.error("❌ API 상세 에러:", error);
-    
     const exactError = error.data?.statusMessage || error.message || '알 수 없는 서버 오류';
     alert(`🚨 [오류 발생]\n이유: ${exactError}\n\n입력하신 데이터를 확인하시거나 잠시 후 다시 시도해주세요.`);
-    
     phase.value = 1; 
   } finally {
     loading.value = false;

@@ -144,20 +144,20 @@
         <div class="space-y-6 relative z-10">
           <h3 class="text-3xl md:text-[2.75rem] font-bold text-[#F7F2EB] leading-[1.3] tracking-tight">
             {{ formData.name }}님만을 위해 완성된<br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D49A99] to-[#F7F2EB]">맞춤형 고해상도 무손실 개운 주파수</span>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D49A99] to-[#F7F2EB]">사주 분석 리포트 +<br> 개운 주파수</span>
           </h3>
           <p class="text-[#B5A598] text-base md:text-lg font-light leading-relaxed break-keep px-4">
             모든 분석이 끝났습니다. 이제 방금 도출된 <strong class="text-white">{{ calculatedFrequency.hz }}</strong> 나에게 딱 맞는 주파수로 기운의 혼선을 정리하세요.
           </p>
         </div>
         
-        <div class="relative group px-4 z-10">
+      <div class="relative group px-2 sm:px-4 z-10">
           <div class="absolute -inset-2 bg-gradient-to-r from-[#D49A99] via-[#F7F2EB] to-[#D49A99] rounded-[2rem] blur-2xl opacity-50 group-hover:opacity-100 group-hover:blur-3xl transition duration-700 animate-gradient-x"></div>
           
-          <button @click="isWtpConfirmed = true" class="relative w-full h-24 md:h-28 bg-gradient-to-r from-[#F7F2EB] via-[#E8DCC4] to-[#D49A99] text-[#120D1A] font-black text-xl md:text-2xl rounded-[1.5rem] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-5 overflow-hidden">
+          <button @click="isWtpConfirmed = true" class="relative w-full py-6 md:py-8 px-2 bg-gradient-to-r from-[#F7F2EB] via-[#E8DCC4] to-[#D49A99] text-[#120D1A] font-black rounded-[1.5rem] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-4 md:gap-5 overflow-hidden">
             <div class="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent skew-x-12 animate-shine"></div>
-            <span>평생 소장 고해상도 주파수 받기 (₩2,900)</span>
-            <span class="text-3xl animate-bounce-x">→</span>
+            <span class="text-[15px] sm:text-lg md:text-2xl whitespace-nowrap tracking-tight">평생 소장 고해상도 주파수 받기 (₩2,900)</span>
+            <span class="text-xl sm:text-2xl md:text-3xl animate-bounce-x shrink-0">→</span>
           </button>
         </div>
         
